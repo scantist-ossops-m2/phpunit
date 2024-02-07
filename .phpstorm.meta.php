@@ -30,9 +30,4 @@ namespace PHPSTORM_META {
         \PHPUnit\Framework\TestCase::createTestProxy(0),
         map([""=>"$0"])
     );
-
-    override(
-        \PHPUnit\Framework\TestCase::getMockForAbstractClass(0),
-        map([""=>"$0"])
-    );
 }
