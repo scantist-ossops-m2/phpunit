@@ -12,8 +12,6 @@ namespace PHPUnit\Framework\MockObject;
 use function array_merge;
 use function assert;
 use function debug_backtrace;
-use PHPUnit\Event\Facade as EventFacade;
-use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\InvalidArgumentException;
 use PHPUnit\Framework\MockObject\Generator\ClassAlreadyExistsException;
 use PHPUnit\Framework\MockObject\Generator\ClassIsEnumerationException;
@@ -227,44 +225,6 @@ final class MockBuilder
     public function enableOriginalClone(): self
     {
         $this->originalClone = true;
-
-        return $this;
-    }
-
-    /**
-     * Disables the use of class autoloading while creating the mock object.
-     *
-     * @return $this
-     *
-     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5309
-     */
-    public function disableAutoload(): self
-    {
-        EventFacade::emitter()->testTriggeredPhpunitDeprecation(
-            $this->testCase->valueObjectForEvents(),
-            'MockBuilder::disableAutoload() is deprecated and will be removed in PHPUnit 12 without replacement.',
-        );
-
-        $this->autoload = false;
-
-        return $this;
-    }
-
-    /**
-     * Enables the use of class autoloading while creating the mock object.
-     *
-     * @return $this
-     *
-     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5309
-     */
-    public function enableAutoload(): self
-    {
-        EventFacade::emitter()->testTriggeredPhpunitDeprecation(
-            $this->testCase->valueObjectForEvents(),
-            'MockBuilder::enableAutoload() is deprecated and will be removed in PHPUnit 12 without replacement.',
-        );
-
-        $this->autoload = true;
 
         return $this;
     }
