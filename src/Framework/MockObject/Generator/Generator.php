@@ -10,8 +10,6 @@
 namespace PHPUnit\Framework\MockObject\Generator;
 
 use const PHP_EOL;
-use const PREG_OFFSET_CAPTURE;
-use const WSDL_CACHE_NONE;
 use function array_merge;
 use function array_pop;
 use function array_unique;
@@ -19,7 +17,6 @@ use function assert;
 use function class_exists;
 use function count;
 use function explode;
-use function extension_loaded;
 use function implode;
 use function in_array;
 use function interface_exists;
@@ -29,15 +26,9 @@ use function md5;
 use function method_exists;
 use function mt_rand;
 use function preg_match;
-use function preg_match_all;
-use function range;
 use function serialize;
 use function sort;
 use function sprintf;
-use function str_contains;
-use function str_replace;
-use function strlen;
-use function strpos;
 use function substr;
 use function trait_exists;
 use Exception;
@@ -61,8 +52,6 @@ use PHPUnit\Framework\MockObject\StubApi;
 use PHPUnit\Framework\MockObject\StubInternal;
 use ReflectionClass;
 use ReflectionMethod;
-use SoapClient;
-use SoapFault;
 use Throwable;
 use Traversable;
 
@@ -431,103 +420,6 @@ final class Generator
         }
 
         return self::$cache[$key];
-    }
-
-    /**
-     * @throws RuntimeException
-     * @throws SoapExtensionNotAvailableException
-     *
-     * @deprecated https://github.com/sebastianbergmann/phpunit/issues/5242
-     */
-    public function generateClassFromWsdl(string $wsdlFile, string $className, array $methods = [], array $options = []): string
-    {
-        if (!extension_loaded('soap')) {
-            throw new SoapExtensionNotAvailableException;
-        }
-
-        $options['cache_wsdl'] = WSDL_CACHE_NONE;
-
-        try {
-            $client   = new SoapClient($wsdlFile, $options);
-            $_methods = array_unique($client->__getFunctions());
-
-            unset($client);
-        } catch (SoapFault $e) {
-            throw new RuntimeException(
-                $e->getMessage(),
-                $e->getCode(),
-                $e,
-            );
-        }
-
-        sort($_methods);
-
-        $methodTemplate = $this->loadTemplate('wsdl_method.tpl');
-        $methodsBuffer  = '';
-
-        foreach ($_methods as $method) {
-            preg_match_all('/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*\(/', $method, $matches, PREG_OFFSET_CAPTURE);
-
-            $lastFunction = array_pop($matches[0]);
-            $nameStart    = $lastFunction[1];
-            $nameEnd      = $nameStart + strlen($lastFunction[0]) - 1;
-            $name         = str_replace('(', '', $lastFunction[0]);
-
-            if (empty($methods) || in_array($name, $methods, true)) {
-                $arguments = explode(
-                    ',',
-                    str_replace(')', '', substr($method, $nameEnd + 1)),
-                );
-
-                foreach (range(0, count($arguments) - 1) as $i) {
-                    $parameterStart = strpos($arguments[$i], '$');
-
-                    if (!$parameterStart) {
-                        continue;
-                    }
-
-                    $arguments[$i] = substr($arguments[$i], $parameterStart);
-                }
-
-                $methodTemplate->setVar(
-                    [
-                        'method_name' => $name,
-                        'arguments'   => implode(', ', $arguments),
-                    ],
-                );
-
-                $methodsBuffer .= $methodTemplate->render();
-            }
-        }
-
-        $optionsBuffer = '[';
-
-        foreach ($options as $key => $value) {
-            $optionsBuffer .= $key . ' => ' . $value;
-        }
-
-        $optionsBuffer .= ']';
-
-        $classTemplate = $this->loadTemplate('wsdl_class.tpl');
-        $namespace     = '';
-
-        if (str_contains($className, '\\')) {
-            $parts     = explode('\\', $className);
-            $className = array_pop($parts);
-            $namespace = 'namespace ' . implode('\\', $parts) . ';' . "\n\n";
-        }
-
-        $classTemplate->setVar(
-            [
-                'namespace'  => $namespace,
-                'class_name' => $className,
-                'wsdl'       => $wsdlFile,
-                'options'    => $optionsBuffer,
-                'methods'    => $methodsBuffer,
-            ],
-        );
-
-        return $classTemplate->render();
     }
 
     /**
