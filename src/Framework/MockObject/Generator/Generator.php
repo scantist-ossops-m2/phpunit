@@ -461,8 +461,6 @@ final class Generator
             throw new MethodNamedMethodException;
         }
 
-        $traits[] = Method::class;
-
         if ($doubledCloneMethod) {
             $traits[] = DoubledCloneMethod::class;
         }
