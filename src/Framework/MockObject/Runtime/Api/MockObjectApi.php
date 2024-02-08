@@ -22,18 +22,11 @@ use PHPUnit\Framework\MockObject\Rule\InvocationOrder;
 trait MockObjectApi
 {
     private static array $__phpunit_deprecation_emitted_for_test = [];
-    private object $__phpunit_originalObject;
 
     /** @noinspection MagicMethodsValidityInspection */
     public function __phpunit_hasMatchers(): bool
     {
         return $this->__phpunit_getInvocationHandler()->hasMatchers();
-    }
-
-    /** @noinspection MagicMethodsValidityInspection */
-    public function __phpunit_setOriginalObject(object $originalObject): void
-    {
-        $this->__phpunit_originalObject = $originalObject;
     }
 
     /** @noinspection MagicMethodsValidityInspection */
