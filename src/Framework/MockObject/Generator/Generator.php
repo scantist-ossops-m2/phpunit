@@ -351,6 +351,10 @@ final class Generator
                 throw new ClassIsReadonlyException($_mockClassName['fullClassName']);
             }
 
+            if ($class->hasMethod('method')) {
+                throw new MethodNamedMethodException;
+            }
+
             // @see https://github.com/sebastianbergmann/phpunit/issues/2995
             if ($isInterface && $class->implementsInterface(Throwable::class)) {
                 $actualClassName        = Exception::class;
@@ -436,6 +440,10 @@ final class Generator
             }
         }
 
+        if ($mockMethods->hasMethod('method')) {
+            throw new MethodNamedMethodException;
+        }
+
         $mockedMethods = '';
         $configurable  = [];
 
@@ -455,10 +463,6 @@ final class Generator
 
         if ($mockObject) {
             $traits[] = MockObjectApi::class;
-        }
-
-        if ($mockMethods->hasMethod('method') || (isset($class) && $class->hasMethod('method'))) {
-            throw new MethodNamedMethodException;
         }
 
         if ($doubledCloneMethod) {
