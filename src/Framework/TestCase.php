@@ -749,10 +749,8 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
     /**
      * @internal This method is not covered by the backward compatibility promise for PHPUnit
      */
-    final public function registerMockObject(MockObject $mockObject): void
+    final public function registerMockObject(MockObjectInternal $mockObject): void
     {
-        assert($mockObject instanceof MockObjectInternal);
-
         $this->mockObjects[] = $mockObject;
     }
 
@@ -1195,7 +1193,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
         );
 
         assert($mock instanceof $originalClassName);
-        assert($mock instanceof MockObject);
+        assert($mock instanceof MockObjectInternal);
 
         $this->registerMockObject($mock);
 
@@ -1217,7 +1215,7 @@ abstract class TestCase extends Assert implements Reorderable, SelfDescribing, T
             returnValueGeneration: self::generateReturnValuesForTestDoubles(),
         );
 
-        assert($mock instanceof MockObject);
+        assert($mock instanceof MockObjectInternal);
 
         $this->registerMockObject($mock);
 
