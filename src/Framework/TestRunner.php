@@ -349,10 +349,6 @@ final class TestRunner
     {
         $metadata = MetadataRegistry::parser()->forClassAndMethod($className, $methodName);
 
-        if ($metadata->isCovers()->isNotEmpty()) {
-            return true;
-        }
-
         if ($metadata->isCoversClass()->isNotEmpty()) {
             return true;
         }
