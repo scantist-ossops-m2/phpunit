@@ -463,9 +463,6 @@
     <PossiblyNullArgument>
       <code><![CDATA[$key]]></code>
     </PossiblyNullArgument>
-    <RedundantCast>
-      <code><![CDATA[(int) $matches[0][1]]]></code>
-    </RedundantCast>
   </file>
   <file src="src/Metadata/Api/Dependencies.php">
     <RedundantCondition>
