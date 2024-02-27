@@ -157,7 +157,6 @@ final class TestRunner
 
                     $linesToBeUsed = (new CodeCoverageMetadataApi)->linesToBeUsed(
                         $test::class,
-                        $test->name(),
                     );
                 } catch (InvalidCoversTargetException $cce) {
                     Event\Facade::emitter()->testTriggeredPhpunitWarning(

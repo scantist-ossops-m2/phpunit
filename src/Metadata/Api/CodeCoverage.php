@@ -47,7 +47,7 @@ final readonly class CodeCoverage
         $codeUnits = CodeUnitCollection::fromList();
         $mapper    = new Mapper;
 
-        foreach (Registry::parser()->forClassAndMethod($className, $methodName) as $metadata) {
+        foreach (Registry::parser()->forClass($className) as $metadata) {
             if (!$metadata->isCoversClass() && !$metadata->isCoversMethod() && !$metadata->isCoversFunction()) {
                 continue;
             }
@@ -64,18 +64,17 @@ final readonly class CodeCoverage
 
     /**
      * @psalm-param class-string $className
-     * @psalm-param non-empty-string $methodName
      *
      * @psalm-return array<string,list<int>>
      *
      * @throws CodeCoverageException
      */
-    public function linesToBeUsed(string $className, string $methodName): array
+    public function linesToBeUsed(string $className): array
     {
         $codeUnits = CodeUnitCollection::fromList();
         $mapper    = new Mapper;
 
-        foreach (Registry::parser()->forClassAndMethod($className, $methodName) as $metadata) {
+        foreach (Registry::parser()->forClass($className) as $metadata) {
             if (!$metadata->isUsesClass() && !$metadata->isUsesMethod() && !$metadata->isUsesFunction()) {
                 continue;
             }
